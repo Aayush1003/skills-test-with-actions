@@ -35,8 +35,13 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest
           pytest --verbose
-          python -m pip install build
-          python -m build
+          # Only attempt to build if this repository contains packaging metadata
+          if [ -f pyproject.toml ] || [ -f setup.py ]; then
+            python -m pip install build
+            python -m build
+          else
+            echo "No pyproject.toml or setup.py found — skipping build step."
+          fi
 
       - name: Upload distributions
         uses: actions/upload-artifact@v4
